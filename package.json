@@ -24,5 +24,8 @@
     "node-datetime": "^1.0.0",
     "request": "^2.81.0"
   },
+  "engines" : {
+    "node":"7.10.0"
+  },
   "devDependencies": {}
 }
