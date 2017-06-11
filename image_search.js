@@ -16,11 +16,20 @@ var mlaburl = "mongodb://cptcanadiman:murphy79@ds111262.mlab.com:11262/imagesear
 var searchRes = [];
 app.use(express.static("Public"))
 
-app.get("/api/imagesearch/:QUERY-:PAGES", function(req,res){
+app.get("/api/imagesearch/:QUERY", function(req,res){
     var searchTerm = req.params.QUERY
     var pageNumber = req.params.PAGES
+    var offset = req.query.offset
+    var reg = new RegExp('^[0-9]+$');
+    if (reg.test(offset)) {
+        url = 'https://www.googleapis.com/customsearch/v1' + '?key=' + api_key + '&cx=' + cse_id + '&searchType=image' + '&q=' + searchTerm + '&start=' + offset
+    } else {
+        url = 'https://www.googleapis.com/customsearch/v1' + '?key=' + api_key + '&cx=' + cse_id + '&searchType=image' + '&q=' + searchTerm
+    }
+
+    console.log(offset)
     toDB(searchTerm)
-    url = 'https://www.googleapis.com/customsearch/v1' + '?key=' + api_key + '&cx=' + cse_id + '&searchType=image' + '&q=' + searchTerm + '&start=' + pageNumber
+    
     request(url, function(error, response, body) {
     body = JSON.parse(body);
     link = body.items[0].link
@@ -83,11 +92,6 @@ function getTime() {
 }
 
 
-
-
-
-
-
-app.listen(8080,function(){
+app.listen(process.env.PORT || 8080,function(){
     console.log("App running on port" + " " + 8080)
 })
